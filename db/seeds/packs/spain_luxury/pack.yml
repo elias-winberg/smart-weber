@@ -72,8 +72,8 @@ page_parts:
 users:
   - email: admin@costaluxury.es
     role: admin
-    password: demo123
+    password:
 
   - email: agent@costaluxury.es
     role: agent
-    password: demo123
+    password:
