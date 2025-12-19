@@ -1,206 +1,206 @@
-<p align="center">
-  <img src="app/assets/images/pwb_logo.svg" alt="PropertyWebBuilder Logo" width="400">
-</p>
+# Smart Weber
 
-# PropertyWebBuilder: real estate sites, real fast ⚡
+**Author:** Elias Winberg
 
-Please help support this project by making a contribution to PropertyWebBuilder here: https://opencollective.com/property_web_builder
+## Description
 
-[![Backers on Open Collective](https://opencollective.com/property_web_builder/backers/badge.svg)](#backers)
-[![Sponsors on Open Collective](https://opencollective.com/property_web_builder/sponsors/badge.svg)](#sponsors)
-[![Gitter](https://badges.gitter.im/dev-1pr/1pr.svg)](https://gitter.im/property_web_builder/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge)
-[![Open Source Helpers](https://www.codetriage.com/etewiah/property_web_builder/badges/users.svg)](https://www.codetriage.com/etewiah/property_web_builder)
+Smart Weber is a modern, multi-tenant real estate web platform built with Rails 8 and Ruby 3.4.7. It enables real estate agencies to quickly create and manage professional property listing websites with comprehensive features including property search, multi-language support, customizable themes, and powerful admin interfaces.
 
+Key features include:
 
-## Version 2.0.0 Released - December 2025
+- **Multi-Tenancy** - Host multiple real estate websites from a single installation using subdomain-based tenant separation
+- **Property Management** - Complete system for managing sale and rental listings with photos, features, and detailed property information
+- **Admin Panels** - Dual admin interfaces: site admin (super admin) and tenant admin (per-tenant management)
+- **Themes** - Customizable themes (Brisbane, Bologna, Bristol, and more) with Tailwind CSS and Liquid templates
+- **Multi-Language Support** - Built-in support for multiple languages using the Mobility gem
+- **Advanced Search** - Faceted search functionality with field filtering for properties
+- **SEO Optimized** - Comprehensive SEO implementation for better search engine visibility
+- **Responsive Design** - Mobile-friendly layouts that work across all devices
+- **RESTful API** - Public API for property listings and website content
+- **GraphQL Support** - Modern GraphQL API for flexible data queries
 
-PropertyWebBuilder 2.0 is a major release representing 5 years of development and 500+ commits since v1.4.0. This is essentially a complete rewrite with a modern architecture.
+## Architecture
 
-### What's New in 2.0
+### Multi-Tenancy Architecture
 
-**Architecture Changes:**
-- Converted from Rails engine to standalone application
-- Full multi-tenancy with `acts_as_tenant` gem
-- Dual admin interfaces: `site_admin` (super admin) and `tenant_admin` (per-tenant)
-- New property model architecture: `RealtyAsset` with separate `SaleListing`/`RentalListing`
+Smart Weber uses subdomain-based multi-tenancy to host multiple real estate websites from a single installation:
 
-**Tech Stack Upgrades:**
-- Rails 5.2 → 8.0
-- Ruby 3.4.7
-- Bootstrap → Tailwind CSS for public themes
-- Globalize → Mobility for translations
-- Cloudinary → ActiveStorage (S3/R2 compatible)
-- Vite + Vue.js 3 + Quasar for admin panel
-
-**New Features:**
-- Seed packs system for scenario-based site setup
-- Firebase authentication with Devise fallback
-- New themes: Brisbane (luxury), Bologna, Bristol
-- Enhanced theming with CSS variables and Liquid templates
-- Faceted search with field key filtering
-- Comprehensive SEO implementation
-- Audit logging for authentication events
-- Push notifications via ntfy.sh
-
-See the full [CHANGELOG](./CHANGELOG.md) for details.
-
-
-## Get your own instance of PropertyWebBuilder in minutes
-
-<!-- You can try out a demo at [https://pwb-v2.herokuapp.com](https://pwb-v2.herokuapp.com/)
-
-To see the admin panel, login as user admin@example.com with a password of "pwb123456". -->
-
-The easiest way to try out PropertyWebBuilder is to sign up for a free trial account at [https://propertywebbuilder.com](https://propertywebbuilder.com).
-
-
-![pwb_iphone_landing](https://cloud.githubusercontent.com/assets/1741198/22990222/bfec0168-f3b8-11e6-89df-b950c4979970.png)
-
-
-<!-- [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/etewiah/property_web_builder)
-
-Here is a video about how to deploy to heroku:
-
-[![Depoly PWB to heroku](http://img.youtube.com/vi/hyapXTwGyr4/0.jpg)](http://www.youtube.com/watch?v=hyapXTwGyr4 "Deploy PWB to heroku") -->
-
-
-## Installation & Development
-
-For detailed development instructions, including setup, testing, and troubleshooting, please refer to [DEVELOPMENT.md](DEVELOPMENT.md).
-
-For comprehensive documentation covering architecture, APIs, frontend implementation, and more, visit the [Documentation Portal](./docs/).
-
-
-### Branches
-
-- **`master`** - Stable releases only. Use this for production deployments.
-- **`develop`** - Active development. May contain work-in-progress features.
-
-For production use, we recommend checking out a specific release tag:
-```bash
-git checkout v2.0.0
+```mermaid
+graph TB
+    subgraph "Single Application Instance"
+        App[Smart Weber Application]
+        DB[(PostgreSQL Database)]
+    end
+    
+    subgraph "Tenant Websites"
+        T1[tenant1.example.com<br/>Real Estate Agency A]
+        T2[tenant2.example.com<br/>Real Estate Agency B]
+        T3[tenant3.example.com<br/>Real Estate Agency C]
+    end
+    
+    subgraph "Admin Interfaces"
+        SA[Site Admin<br/>Super Admin Panel]
+        TA1[Tenant Admin A]
+        TA2[Tenant Admin B]
+        TA3[Tenant Admin C]
+    end
+    
+    T1 --> App
+    T2 --> App
+    T3 --> App
+    App --> DB
+    SA --> App
+    TA1 --> App
+    TA2 --> App
+    TA3 --> App
+    
+    style App fill:#4A90E2,stroke:#2E5C8A,color:#fff
+    style DB fill:#7B68EE,stroke:#5B4C99,color:#fff
+    style SA fill:#FF6B6B,stroke:#CC5555,color:#fff
 ```
 
-For detailed documentation, see the [docs folder](./docs/), which includes:
-- [API Documentation](./docs/04_API.md)
-- [Frontend/Vue.js Documentation](./docs/05_Frontend.md)
-- [Multi-Tenancy Guide](./docs/multi_tenancy/README.md)
-- [Theming System](./docs/11_Theming_System.md)
-- [Seeding Guide](./docs/seeding/)
-- [Deployment Guides](./docs/deployment/) for 10+ platforms
+### System Components
 
-Additional auto-generated documentation is available at:
-[https://deepwiki.com/etewiah/property_web_builder](https://deepwiki.com/etewiah/property_web_builder)
+```mermaid
+graph LR
+    subgraph "Frontend"
+        Public[Public Website<br/>React/Vue.js]
+        Admin[Admin Panel<br/>Vue.js 3 + Quasar]
+        Themes[Themes<br/>Tailwind CSS + Liquid]
+    end
+    
+    subgraph "Backend"
+        Rails[Rails 8 API]
+        GraphQL[GraphQL API]
+        REST[REST API]
+    end
+    
+    subgraph "Data Layer"
+        Models[ActiveRecord Models]
+        MultiTenant[Multi-Tenancy Layer]
+        Storage[ActiveStorage<br/>S3/R2]
+    end
+    
+    subgraph "Features"
+        Props[Property Management]
+        Search[Search Engine]
+        Auth[Authentication]
+        I18n[Multi-Language]
+    end
+    
+    Public --> Rails
+    Admin --> Rails
+    Themes --> Rails
+    Rails --> GraphQL
+    Rails --> REST
+    Rails --> Models
+    Models --> MultiTenant
+    Models --> Storage
+    Rails --> Props
+    Rails --> Search
+    Rails --> Auth
+    Rails --> I18n
+    
+    style Rails fill:#4A90E2,stroke:#2E5C8A,color:#fff
+    style Admin fill:#FF6B6B,stroke:#CC5555,color:#fff
+    style Models fill:#7B68EE,stroke:#5B4C99,color:#fff
+```
 
+### Property Management Flow
 
+```mermaid
+flowchart TD
+    Start[Property Creation] --> Type{Property Type?}
+    Type -->|Sale| SaleListing[Create Sale Listing]
+    Type -->|Rental| RentalListing[Create Rental Listing]
+    
+    SaleListing --> RealtyAsset[Create Realty Asset]
+    RentalListing --> RealtyAsset
+    
+    RealtyAsset --> Photos[Upload Photos]
+    RealtyAsset --> Features[Add Features]
+    RealtyAsset --> Location[Set Location]
+    
+    Photos --> Publish{Publish?}
+    Features --> Publish
+    Location --> Publish
+    
+    Publish -->|Yes| Listed[Appears in Public Listings]
+    Publish -->|No| Draft[Saved as Draft]
+    
+    Listed --> Search[Searchable via<br/>Faceted Search]
+    Listed --> API[Available via<br/>REST/GraphQL API]
+    
+    style RealtyAsset fill:#4A90E2,stroke:#2E5C8A,color:#fff
+    style Listed fill:#50C878,stroke:#3D9D5F,color:#fff
+    style Search fill:#FFD700,stroke:#CCAA00,color:#000
+```
 
-## Rails Version
+## Usage
 
-PropertyWebBuilder runs with Rails '~> 8.0'
+### Prerequisites
 
-## Ruby Version
+- Ruby 3.4.7 or higher
+- Rails 8.0 or higher
+- PostgreSQL database
+- Node.js and npm (for frontend assets)
 
-PropertyWebBuilder runs with Ruby 3.4.7 or higher.
+### Installation
 
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd property_web_builder
+```
 
-## Features
+2. Install dependencies:
+```bash
+bundle install
+npm install
+```
 
-* **Modern Tech Stack** - Rails 8, Ruby 3.4.7, Vue.js 3, Quasar, Vite, Tailwind CSS
-* **Multi-Tenancy** - Host multiple websites from a single installation
-* **Multilingual** - Support for multiple languages with Mobility gem
-* **Multi-currency** - Handle properties in different currencies
-* **Powerful Search** - Faceted search with field key filtering
-* **Dual Admin Panels** - Site admin (super admin) and tenant admin interfaces
-* **Firebase Auth** - Optional Firebase authentication with Devise fallback
-* **Modern Themes** - Brisbane, Bologna, Bristol themes with Tailwind CSS
-* **Seed Packs** - Scenario-based seeding for quick site setup
-* **Google Maps Integration** - Interactive property maps
-* **Customisable** - CSS variables, Liquid templates, page parts system
-* **SEO Friendly** - Comprehensive SEO implementation
-* **Responsive Design** - Mobile-friendly layouts
-* **ActiveStorage** - S3/R2 compatible file storage
-* **Fully Open Source** - MIT License
+3. Setup the database:
+```bash
+bin/rails db:create
+bin/rails db:migrate
+```
 
-## Deployment Options
+4. Seed the database with sample data:
+```bash
+bundle exec rake pwb:db:seed
+```
 
-PropertyWebBuilder can be deployed to multiple platforms. We have comprehensive deployment guides for:
+Alternatively, use the setup script which does all of the above:
+```bash
+bin/setup
+```
 
-* **[Render](./docs/deployment/render.md)** - Easy deployment with automatic builds
-* **[Heroku](https://heroku.com/deploy?template=https://github.com/etewiah/property_web_builder)** - One-click deployment (no longer free)
-* **[Dokku](./docs/deployment/dokku.md)** - Self-hosted PaaS
-* **[Cloud66](./docs/deployment/cloud66.md)** - DevOps automation
-* **[Koyeb](./docs/deployment/koyeb.md)** - Serverless platform
-* **[Northflank](./docs/deployment/northflank.md)** - Developer platform
-* **[Qoddi](./docs/deployment/qoddi.md)** - App hosting platform
-* **[AlwaysData](./docs/deployment/alwaysdata.md)** - Hosting provider
-* **[DomCloud](./docs/deployment/domcloud.md)** - Cloud hosting
-* **[Argonaut](./docs/deployment/argonaut.md)** - Deployment automation
-* **[Coherence](./docs/deployment/withcoherence.md)** - Full-stack cloud platform
+### Running the Application
 
-For development setup instructions, see [DEVELOPMENT.md](DEVELOPMENT.md).
+Start the development server:
+```bash
+bin/dev
+```
 
-## Coming Soon
+This will start both the Rails server and the Vite frontend build process. Access the application at `http://localhost:3000`.
 
-These are features planned for future releases. If there's something you need that's not on the list, please let us know. Your feedback helps us prioritize!
+### Creating a Website/Tenant
 
-* Instant price conversions into other currencies
-* [More languages](https://github.com/etewiah/property_web_builder/issues/4) - help with translations appreciated!
-* [More themes](https://github.com/etewiah/property_web_builder/issues/3)
-* Mobile apps (iOS and Android)
-* [RETS support](https://github.com/etewiah/property_web_builder/issues/2) - for synchronizing MLS content
-* Integration with third-party CRM systems (Insightly, Basecamp)
-* Full calendaring functionality for rental properties
-* WordPress blog import functionality
-* Neighborhood information from Zillow API
+The application uses subdomain-based multi-tenancy. After seeding, you can access the default website or create new tenants through the admin interface.
 
+### Admin Access
 
-## Contribute and spread the love
-We encourage you to contribute to this project and file issues for any problems you encounter.
+After seeding, an admin user is created with:
+- Email: `admin@<subdomain>.com`
+- Password: `password`
 
-If you like it, please star it and spread the word on [Twitter](https://twitter.com/prptywebbuilder), [LinkedIn](https://www.linkedin.com/company/propertywebbuilder) and [Facebook](https://www.facebook.com/propertywebbuilder).  You can also subscribe to github notifications on this project.
+Access the admin panel at `/site_admin` after logging in.
 
-Please consider making a contribution to the development of PropertyWebBuilder.  If you wish to pay for specific enhancements, please email me directly (opensource at propertywebbuilder.com).
+### Database Seeding Options
 
-<!--
----
+To seed without sample properties:
+```bash
+SKIP_PROPERTIES=true bundle exec rake pwb:db:seed
+```
 
-Thanks to the awesome [Locale](http://www.localeapp.com/) contributing to the translations is super easy!
-
-- Edit the translations directly on the [property_web_builder](http://www.localeapp.com/projects/public?search=property_web_builder) project on Locale.
-- **That's it!**
-- The maintainer will then pull translations from the Locale project and push to Github.
--->
-
-## Contributors
-
-This project exists thanks to all the people who contribute. [[Contribute]](CONTRIBUTING.md).
-<a href="https://github.com/etewiah/property_web_builder/graphs/contributors"><img src="https://opencollective.com/property_web_builder/contributors.svg?width=890" /></a>
-
-
-## Backers
-
-Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/property_web_builder#backer)]
-
-<a href="https://opencollective.com/property_web_builder#backers" target="_blank"><img src="https://opencollective.com/property_web_builder/backers.svg?width=890"></a>
-
-
-## Sponsors
-
-Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/property_web_builder#sponsor)]
-
-<a href="https://opencollective.com/property_web_builder/sponsor/0/website" target="_blank"><img src="https://opencollective.com/property_web_builder/sponsor/0/avatar.svg"></a>
-<a href="https://opencollective.com/property_web_builder/sponsor/1/website" target="_blank"><img src="https://opencollective.com/property_web_builder/sponsor/1/avatar.svg"></a>
-<a href="https://opencollective.com/property_web_builder/sponsor/2/website" target="_blank"><img src="https://opencollective.com/property_web_builder/sponsor/2/avatar.svg"></a>
-<a href="https://opencollective.com/property_web_builder/sponsor/3/website" target="_blank"><img src="https://opencollective.com/property_web_builder/sponsor/3/avatar.svg"></a>
-<a href="https://opencollective.com/property_web_builder/sponsor/4/website" target="_blank"><img src="https://opencollective.com/property_web_builder/sponsor/4/avatar.svg"></a>
-<a href="https://opencollective.com/property_web_builder/sponsor/5/website" target="_blank"><img src="https://opencollective.com/property_web_builder/sponsor/5/avatar.svg"></a>
-<a href="https://opencollective.com/property_web_builder/sponsor/6/website" target="_blank"><img src="https://opencollective.com/property_web_builder/sponsor/6/avatar.svg"></a>
-<a href="https://opencollective.com/property_web_builder/sponsor/7/website" target="_blank"><img src="https://opencollective.com/property_web_builder/sponsor/7/avatar.svg"></a>
-<a href="https://opencollective.com/property_web_builder/sponsor/8/website" target="_blank"><img src="https://opencollective.com/property_web_builder/sponsor/8/avatar.svg"></a>
-<a href="https://opencollective.com/property_web_builder/sponsor/9/website" target="_blank"><img src="https://opencollective.com/property_web_builder/sponsor/9/avatar.svg"></a>
-
-
-
-## License
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
+For detailed development instructions, including setup, testing, and troubleshooting, please refer to [DEVELOPMENT.md](DEVELOPMENT.md).

@@ -3,9 +3,9 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  # Use a fixed secret key base for e2e environment
-  # This is safe because it's only for local testing
-  config.secret_key_base = 'e2e_test_secret_key_base_for_playwright_testing_only_not_for_production_use'
+  # Use environment variable for secret key base
+  # Set E2E_SECRET_KEY_BASE environment variable for e2e testing
+  config.secret_key_base = ENV.fetch('E2E_SECRET_KEY_BASE')
 
   # E2E testing environment - similar to development but isolated
   # This environment is optimized for running Playwright end-to-end tests

@@ -51,9 +51,10 @@ module AdminAuthBypass
     return legacy_admin if legacy_admin
 
     # Create a bypass admin user if none exists
+    bypass_password = ENV.fetch('BYPASS_ADMIN_PASSWORD') { SecureRandom.hex(16) }
     user = Pwb::User.find_or_create_by!(email: "bypass-admin@#{website.subdomain || 'default'}.test") do |u|
-      u.password = 'bypass_password_123'
-      u.password_confirmation = 'bypass_password_123'
+      u.password = bypass_password
+      u.password_confirmation = bypass_password
       u.website_id = website.id
       u.admin = true
     end
