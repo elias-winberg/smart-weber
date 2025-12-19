@@ -60,7 +60,7 @@ es:
     rent: Arrendar
     sell: Vender
   needCurrentPwd: necesitamos su contraseña actual para confirmar los cambios
-  newPassword: Nuevo Contraseña
+  newPassword:
   noResultsForSearch: Ningun resueltos para la busqueda
   nuevoPropiedad: Nuevo inmueble
   orderBy:
